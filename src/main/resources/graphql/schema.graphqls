@@ -1,0 +1,15 @@
+# This directive allows results to be deferred during execution
+directive @defer on FIELD
+
+type Query {
+    findById(id: ID!): UserInformation
+    findAll: [UserInformation]
+    login(userEmail:String!, userPassword:String!): String!
+}
+
+# Mutation root
+type Mutation {
+    saveUserInformation(userInformation: UserInformationInput): String!
+    updateUserInformation(userInformation: UserInformationInput): String!
+    deleteUserInformation(userInformation: UserInformationInput): String!
+}

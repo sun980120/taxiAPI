@@ -1,0 +1,79 @@
+type UserInformation {
+    id:ID!
+    userEmail: String
+    userPassword: String
+    phone: String
+    nickname: String
+    language: String
+    accessToken: String
+    drivingRecord: DrivingRecord
+    taxiReserve: TaxiReserve
+    userPayment: UserPayment
+}
+type DrivingRecord {
+    id:ID!
+    userInformation:UserInformation
+    driverCar:DriverCar
+    depLocation: String
+    arrLocation: String
+    charge: Int
+    depDateTime:String
+    arrDateTime:String
+}
+type TaxiReserve {
+    id:ID!
+    userInformation:UserInformation
+    driverCar:DriverCar
+    registerDateTime:String
+    updateDateTime:String
+    arrLocation:String
+    depLocation:String
+    status:String
+    arrDateTime:String
+    depDateTime:String
+}
+type DriverCar {
+    id:ID!
+    driverInformation: DriverInformation
+    carInformation: CarInformation
+    registerDateTime: String
+}
+
+type DriverInformation {
+    id:ID!
+    name:String
+    birth:String
+    phone:String
+    registerDateTime:String
+    updateDateTime:String
+    companyId:String
+}
+
+type CarInformation {
+    id:ID!
+    plateNumber:String
+    companyId:String
+    status:String
+    type:String
+    model:String
+    color:String
+    year:String
+    fuelType:String
+    missionType:String
+    registerDateTime:String
+    registerBy:String
+    updateDateTime:String
+    updateBy:String
+}
+
+type UserPayment {
+    id:ID!
+    userInformation:UserInformation
+    key:String
+    name:String
+    registerDateTime:String
+    updateDateTime:String
+    cardType:String
+    bankNumber:String
+    bankType:String
+}
