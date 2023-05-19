@@ -28,8 +28,8 @@ public class TaxiReserve {
     private String arrLocation;
     private String depLocation;
     private String status;
-    private LocalDateTime arrTime;
-    private LocalDateTime depTime;
+    private LocalDateTime arrDateTime;
+    private LocalDateTime depDateTime;
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();

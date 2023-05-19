@@ -2,7 +2,7 @@ package com.example.taxi.service.userInformation;
 
 import com.example.taxi.entity.UserInformation;
 import com.example.taxi.service.userInformation.dto.UserInformationDto;
-import com.example.taxi.service.userInformation.impl.UserInformationService;
+import com.example.taxi.service.userInformation.service.UserInformationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.Arguments;
@@ -33,6 +33,9 @@ public class UserInformationController {
 
     @SchemaMapping(typeName = "Mutation", value = "saveUserInformation")
     public String saveUserInformation(@Argument UserInformation userInformation) {
+        System.out.println(userInformation.getUserEmail());
+        System.out.println(userInformation.getUserPassword());
+        System.out.println(userInformation.getLanguage());
         return userInformationService.saveUserInformation(userInformation);
     }
 

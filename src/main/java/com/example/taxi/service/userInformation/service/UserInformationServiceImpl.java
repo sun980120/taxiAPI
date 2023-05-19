@@ -1,9 +1,8 @@
-package com.example.taxi.service.userInformation;
+package com.example.taxi.service.userInformation.service;
 
 import com.example.taxi.entity.UserInformation;
 import com.example.taxi.repository.UserInformationRepository;
 import com.example.taxi.service.userInformation.dto.UserInformationDto;
-import com.example.taxi.service.userInformation.impl.UserInformationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

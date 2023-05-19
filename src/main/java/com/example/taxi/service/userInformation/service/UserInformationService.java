@@ -1,4 +1,4 @@
-package com.example.taxi.service.userInformation.impl;
+package com.example.taxi.service.userInformation.service;
 
 import com.example.taxi.entity.UserInformation;
 import com.example.taxi.service.userInformation.dto.UserInformationDto;
