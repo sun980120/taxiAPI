@@ -6,9 +6,9 @@ import com.example.taxi.service.userInformation.dto.UserInformationDto;
 import java.util.List;
 
 public interface UserInformationService {
-    List<UserInformation> findAll();
+    List<UserInformationDto> findAll();
 
-    UserInformation findById(Long id);
+    UserInformationDto findById(Long id);
 
     String saveUserInformation(UserInformation userInformation);
 

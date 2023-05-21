@@ -17,12 +17,12 @@ public class UserInformationController {
     private final UserInformationService userInformationService;
 
     @SchemaMapping(typeName = "Query", value = "findAll")
-    public List<UserInformation> findAll() {
+    public List<UserInformationDto> findAll() {
         return userInformationService.findAll();
     }
 
     @SchemaMapping(typeName = "Query", value = "findById")
-    public UserInformation findById(@Argument Long id) {
+    public UserInformationDto findById(@Argument Long id) {
         return userInformationService.findById(id);
     }
 

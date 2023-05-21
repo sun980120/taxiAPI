@@ -2,6 +2,7 @@ package com.example.taxi.service.userInformation.service;
 
 import com.example.taxi.entity.UserInformation;
 import com.example.taxi.repository.UserInformationRepository;
+import com.example.taxi.service.common.EmailMaskingUtil;
 import com.example.taxi.service.userInformation.dto.UserInformationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +19,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserInformationServiceImpl implements UserInformationService {
     private final UserInformationRepository userInformationRepository;
+//    private final EmailMaskingUtil emailMaskingUtil;
     @Override
-    public List<UserInformation> findAll() {
+    public List<UserInformationDto> findAll() {
         try {
-            return userInformationRepository.findAll();
+            List<UserInformation> userInformationList = userInformationRepository.findAll();
+            List<UserInformationDto> userInformationDtoList = new ArrayList<>();
+            for (UserInformation i : userInformationList
+            ) {
+                UserInformationDto userInformationDto = new UserInformationDto().EntityToDto(i);
+                System.out.println(i.getUserEmail());
+                String maskedUserEmail = EmailMaskingUtil.maskUserEmail(i.getUserEmail());
+                System.out.println(maskedUserEmail);
+                userInformationDto.setUserEmail(maskedUserEmail);
+                userInformationDtoList.add(userInformationDto);
+            }
+            return userInformationDtoList;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -28,9 +42,13 @@ public class UserInformationServiceImpl implements UserInformationService {
     }
 
     @Override
-    public UserInformation findById(Long id) {
+    public UserInformationDto findById(Long id) {
         try {
-            return userInformationRepository.findById(id).get();
+            UserInformation userInformation = userInformationRepository.findById(id).get();
+            UserInformationDto userInformationDto = new UserInformationDto().EntityToDto(userInformation);
+            String maskedUserEmail = EmailMaskingUtil.maskUserEmail(userInformation.getUserEmail());
+            userInformationDto.setUserEmail(maskedUserEmail);
+            return userInformationDto;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
