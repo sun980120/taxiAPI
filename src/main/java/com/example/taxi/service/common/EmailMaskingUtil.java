@@ -3,11 +3,8 @@ package com.example.taxi.service.common;
 import java.util.Arrays;
 
 public class EmailMaskingUtil {
-    private static final int MASKED_CHAR_COUNT = 4;
-
     public static String maskUserEmail(String userEmail) {
-        System.out.println(userEmail);
-        if (userEmail == null | userEmail.isEmpty()) {
+        if (userEmail == null || userEmail.isEmpty()) {
             return userEmail;
         }
         int atIndex = userEmail.indexOf('@');
