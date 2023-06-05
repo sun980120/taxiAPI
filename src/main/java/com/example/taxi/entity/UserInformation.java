@@ -44,4 +44,5 @@ public class UserInformation {
     protected void onUpdate() {
         updateDateTime = LocalDateTime.now();
     }
+
 }

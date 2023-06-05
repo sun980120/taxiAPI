@@ -1,51 +1,47 @@
 package com.example.taxi.service.userInformation;
 
-import com.example.taxi.entity.UserInformation;
-import com.example.taxi.service.userInformation.dto.UserInformationDto;
+import com.example.taxi.service.common.dto.ReturnJSONUtilDto;
+import com.example.taxi.service.userInformation.dto.InsertUserInformationDto;
+import com.example.taxi.service.userInformation.dto.UpdateUserInformationDto;
 import com.example.taxi.service.userInformation.service.UserInformationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.Arguments;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@Controller
+@Api(tags = "회원관리")
+@RestController
+@RequestMapping("/v1/user")
 @RequiredArgsConstructor
 public class UserInformationController {
+
+    private final ObjectMapper objectMapper;
+
     private final UserInformationService userInformationService;
 
-    @SchemaMapping(typeName = "Query", value = "findAll")
-    public List<UserInformationDto> findAll() {
-        return userInformationService.findAll();
+    @PostMapping(value = "/insert", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveUserInformation(@RequestBody InsertUserInformationDto insertUserInformationDto) {
+        ReturnJSONUtilDto result = userInformationService.saveUserInformation(insertUserInformationDto);
+        try {
+            String json = objectMapper.writeValueAsString(result);
+            return ResponseEntity.ok(json);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @SchemaMapping(typeName = "Query", value = "findById")
-    public UserInformationDto findById(@Argument Long id) {
-        return userInformationService.findById(id);
-    }
-
-    @SchemaMapping(typeName = "Query", value = "login")
-    public String login(@Arguments UserInformationDto userInformationDto) {
-        return userInformationService.login(userInformationDto);
-    }
-
-    @SchemaMapping(typeName = "Mutation", value = "saveUserInformation")
-    public String saveUserInformation(@Argument UserInformation userInformation) {
-        System.out.println(userInformation.getUserEmail());
-        System.out.println(userInformation.getUserPassword());
-        System.out.println(userInformation.getLanguage());
-        return userInformationService.saveUserInformation(userInformation);
-    }
-
-    @SchemaMapping(typeName = "Mutation", value = "updateUserInformation")
-    public String updateUserInformation(@Argument UserInformation userInformation) {
-        return userInformationService.updateUserInformation(userInformation);
-    }
-
-    @SchemaMapping(typeName = "Mutation", value = "deleteUserInformation")
-    public String deleteUserInformation(@Argument UserInformation userInformation) {
-        return userInformationService.deleteUserInformation(userInformation);
+    @PostMapping(value = "/update/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateUserInformation(@PathVariable int type, @RequestBody UpdateUserInformationDto updateUserInformationDto) {
+        ReturnJSONUtilDto result = userInformationService.updateUserInformation(updateUserInformationDto, type);
+        try {
+            String json = objectMapper.writeValueAsString(result);
+            return ResponseEntity.ok(json);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

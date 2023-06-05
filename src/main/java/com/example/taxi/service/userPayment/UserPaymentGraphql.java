@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class UserPaymentController {
+public class UserPaymentGraphql {
 //    private final UserPaymentService userPaymentService;
 
 //    @SchemaMapping(typeName = "Query",)

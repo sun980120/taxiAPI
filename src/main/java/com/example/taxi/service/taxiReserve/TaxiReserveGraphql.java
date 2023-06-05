@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class TaxiReserveController {
+public class TaxiReserveGraphql {
 
     private final TaxiReserveService taxiReserveService;
 

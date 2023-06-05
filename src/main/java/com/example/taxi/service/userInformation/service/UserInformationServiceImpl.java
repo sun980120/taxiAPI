@@ -3,6 +3,10 @@ package com.example.taxi.service.userInformation.service;
 import com.example.taxi.entity.UserInformation;
 import com.example.taxi.repository.UserInformationRepository;
 import com.example.taxi.service.common.EmailMaskingUtil;
+import com.example.taxi.service.common.dto.ReturnDataDto;
+import com.example.taxi.service.common.dto.ReturnJSONUtilDto;
+import com.example.taxi.service.userInformation.dto.InsertUserInformationDto;
+import com.example.taxi.service.userInformation.dto.UpdateUserInformationDto;
 import com.example.taxi.service.userInformation.dto.UserInformationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -56,42 +60,64 @@ public class UserInformationServiceImpl implements UserInformationService {
     }
 
     @Override
-    public String saveUserInformation(UserInformation userInformation) {
+    public ReturnJSONUtilDto saveUserInformation(InsertUserInformationDto insertUserInformationDto) {
+        ReturnJSONUtilDto result = new ReturnJSONUtilDto();
+        ReturnDataDto returnDataDto = new ReturnDataDto();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         try {
-            userInformation.setUserPassword(passwordEncoder.encode(userInformation.getUserPassword()));
+            System.out.println(insertUserInformationDto);
+            UserInformation userInformation = UserInformation.builder()
+                    .userEmail(insertUserInformationDto.getUserEmail())
+                    .userPassword(passwordEncoder.encode(insertUserInformationDto.getUserPassword()))
+                    .language(insertUserInformationDto.getLanguage())
+                    .phone(insertUserInformationDto.getPhone())
+                    .nickname(insertUserInformationDto.getNickname())
+                    .build();
             userInformationRepository.save(userInformation);
-            return "success";
+            returnDataDto.setUserInformation(userInformation);
+            result.setResponse(true);
+            result.setResult(returnDataDto);
+            result.setAccessToken("123123");
+            result.setMessage("Success");
         } catch (Exception e) {
+            result.setResponse(false);
+            result.setResult(returnDataDto);
+            result.setAccessToken("123123");
+            result.setMessage(e.getMessage());
             e.printStackTrace();
-            return "fail";
         }
+        return result;
     }
 
     @Override
-    public String updateUserInformation(UserInformation userInformation) {
+    public ReturnJSONUtilDto updateUserInformation(UpdateUserInformationDto updateUserInformationDto, int type) {
+        ReturnJSONUtilDto result = new ReturnJSONUtilDto();
+        ReturnDataDto returnDataDto = new ReturnDataDto();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         try {
-            UserInformation result = userInformationRepository.findById(userInformation.getId()).get();
-            Optional.ofNullable(userInformation)
+            UserInformation userInformation = userInformationRepository.findById(updateUserInformationDto.getId()).get();
+            Optional.ofNullable(updateUserInformationDto)
                             .ifPresent(info -> {
-                                Optional.ofNullable(info.getLanguage()).ifPresent(result::setLanguage);
-                                Optional.ofNullable(info.getPhone()).ifPresent(result::setPhone);
-                                Optional.ofNullable(info.getNickname()).ifPresent(result::setNickname);
-                                Optional.ofNullable(info.getUserPassword()).map(password -> passwordEncoder.encode(password)).ifPresent(result::setUserPassword);
-                                Optional.ofNullable(info.getUserPaymentList()).ifPresent(result::setUserPaymentList);
-                                Optional.ofNullable(info.getDrivingRecordList()).ifPresent(result::setDrivingRecordList);
-                                Optional.ofNullable(info.getTaxiReserveList()).ifPresent(result::setTaxiReserveList);
+                                Optional.ofNullable(info.getLanguage()).ifPresent(userInformation::setLanguage);
+                                Optional.ofNullable(info.getPhone()).ifPresent(userInformation::setPhone);
+                                Optional.ofNullable(info.getNickname()).ifPresent(userInformation::setNickname);
+                                Optional.ofNullable(info.getUserPassword()).map(password -> passwordEncoder.encode(password)).ifPresent(userInformation::setUserPassword);
                             });
-            userInformationRepository.save(result);
-            return "변경완료";
+
+            userInformationRepository.save(userInformation);
+
+            returnDataDto.setUserInformation(userInformation);
+            result.setResponse(true);
+            result.setResult(returnDataDto);
+            result.setAccessToken("123123");
+            result.setMessage(type == 1 ? "프로필 변경 성공" : "비밀번호 변경 성공");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
-            if(e.getMessage().equals("No value present"))
-                return "계정정보 없음";
-            return "fail";
+            result.setResponse(false);
+            result.setAccessToken("123123");
+            result.setMessage(e.getMessage());
         }
+        return result;
     }
 
     @Override
@@ -106,17 +132,28 @@ public class UserInformationServiceImpl implements UserInformationService {
     }
 
     @Override
-    public String login(UserInformationDto userInformationDto) {
+    public ReturnJSONUtilDto login(UserInformationDto userInformationDto) {
+        ReturnJSONUtilDto result = new ReturnJSONUtilDto();
+        ReturnDataDto returnDataDto = new ReturnDataDto();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         try {
             UserInformation userInformation = userInformationRepository.findByUserEmail(userInformationDto.getUserEmail());
             if (!passwordEncoder.matches(userInformationDto.getUserPassword(), userInformation.getUserPassword())) {
                 throw new UsernameNotFoundException("Invalid password");
             }
-            return "success";
+
+            returnDataDto.setUserInformation(userInformation);
+            result.setResult(returnDataDto);
+            result.setAccessToken("123123");
+            result.setResponse(true);
+            result.setMessage("로그인 성공");
         } catch (Exception e) {
+            result.setMessage(e.getMessage());
+            result.setResult(returnDataDto);
+            result.setAccessToken("123123");
+            result.setResponse(true);
             e.printStackTrace();
-            return "fail";
         }
+        return result;
     }
 }
